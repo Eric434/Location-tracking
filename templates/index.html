@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Location Tracker</title>
+    <script>
+        function sendLocation(position) {
+            fetch('/log_location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('status').textContent = 'Location sent!';
+            })
+            .catch(error => {
+                document.getElementById('status').textContent = 'Error sending location.';
+            });
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendLocation, function(error) {
+                    document.getElementById('status').textContent = 'Permission denied or error.';
+                });
+            } else {
+                document.getElementById('status').textContent = 'Geolocation not supported.';
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Location Tracker</h1>
+    <button onclick="getLocation()">Share My Location</button>
+    <p id="status"></p>
+</body>
+</html>
